@@ -54,7 +54,18 @@ COCO_LABEL_MAP = { 1:  1,  2:  2,  3:  3,  4:  4,  5:  5,  6:  6,  7:  7,  8:  8
                   74: 65, 75: 66, 76: 67, 77: 68, 78: 69, 79: 70, 80: 71, 81: 72,
                   82: 73, 84: 74, 85: 75, 86: 76, 87: 77, 88: 78, 89: 79, 90: 80}
 
+CITYSCAPES_CLASSES = ('unlabeled', 'ego vehicle', 'rectification border', 'out of roi', 
+                    'static', 'dynamic', 'ground', 'road', 'sidewalk', 'parking', 'rail track',
+                    'building', 'wall', 'fence', 'guard rail', 'bridge', 'tunnel', 'pole', 
+                    'polegroup', 'traffic light', 'traffic sign', 'vegetation', 'terrain', 'sky',
+                    'person', 'rider', 'car', 'truck', 'bus', 'caravan', 'trailer', 'train',
+                    'motorcycle', 'bicycle', 'license plate')
 
+CITYSCAPES_LABEL_MAP = { 1:  1,  2:  2,  3:  3,  4:  4,  5:  5,  6:  6,  7:  7,  8:  8,
+                   9:  9, 10: 10, 11: 11, 12: 12, 13: 13, 14: 14, 15: 15, 16: 16,
+                  17: 17, 18: 18, 19: 19, 20: 20, 21: 21, 22: 22, 23: 23, 24: 24,
+                  25: 25, 26: 26, 27: 27, 28: 28, 29: 29, 30: 30, 31: 31, 32: 32,
+                  33: 33, 34: 34, 35: -1}
 
 # ----------------------- CONFIG CLASS ----------------------- #
 
@@ -126,6 +137,20 @@ dataset_base = Config({
     # provide a map from category_id -> index in class_names + 1 (the +1 is there because it's 1-indexed).
     # If not specified, this just assumes category ids start at 1 and increase sequentially.
     'label_map': None
+})
+
+cityscapes_dataset = dataset_base.copy({
+    'name': 'Cityscapes',
+
+    'train_images': './data/cityscapes/images/leftImg8bit/train',
+    'train_info':   './data/cityscapes/annotations/instancesonly_filtered_gtFine_train.json',
+
+    'valid_images': './data/cityscapes/images/leftImg8bit/val',
+    'valid_info':   './data/cityscapes/annotations/instancesonly_filtered_gtFine_val.json',
+
+    'has_gt': True,
+    'class_names': CITYSCAPES_CLASSES,
+    'label_map': CITYSCAPES_LABEL_MAP
 })
 
 coco2014_dataset = dataset_base.copy({
@@ -765,6 +790,13 @@ yolact_resnet50_pascal_config = yolact_resnet50_config.copy({
         'pred_scales': [[32], [64], [128], [256], [512]],
         'use_square_anchors': False,
     })
+})
+
+yolact_cityscapes_config = yolact_base_config.copy({
+    'name': 'yolact_cityscapes',
+    'dataset': cityscapes_dataset,
+    'num_classes': len(cityscapes_dataset.class_names) + 1,
+
 })
 
 # ----------------------- YOLACT++ CONFIGS ----------------------- #
